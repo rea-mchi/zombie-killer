@@ -1,6 +1,6 @@
-enum AmmoType
+enum GunType
 {
-    HandGun,
+    Handgun,
     Sniper,
     RocketShooter
 }

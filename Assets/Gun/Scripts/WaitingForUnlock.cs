@@ -5,7 +5,8 @@ using UnityEngine;
 public class WaitingForUnlock : MonoBehaviour
 {
 
-    [SerializeField][Tooltip("Degree")] int angularVel = 30;
+    [SerializeField] string gunname;
+    [SerializeField][Tooltip("Degree")] int angularVel = 60;
     private void Awake() {
         TryGetComponent<SphereCollider>(out var trigger);
         trigger.isTrigger = true;
@@ -18,6 +19,10 @@ public class WaitingForUnlock : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         string tag = other.gameObject.tag;
         if (tag != Strings.PlayerTag) return;
-        Destroy(gameObject);
+        other.gameObject.TryGetComponent<GunController>(out var gunController);
+        if (gunController.Unlock(gunname))
+        {
+            Destroy(transform.parent.gameObject);
+        }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PickUp : MonoBehaviour
 {
 
-    [SerializeField] AmmoType ammoType;
+    [SerializeField] GunType ammoType;
     [SerializeField] int amount;
 
 
