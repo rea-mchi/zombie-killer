@@ -5,16 +5,49 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
 
-    [SerializeField] private GameObject[] _equipGuns; // set init gun here
-    [SerializeField] private GameObject[] _gunList;
+    public class EquippedGunState {
+        readonly GameObject _gun;
+        readonly int _capacityLoad;
+
+        public int Load { get; private set; }
+
+        public bool IsLoadFull => Load == _capacityLoad;
+
+        public GunProperty Property {
+            get {
+                _gun.TryGetComponent<GunProperty>(out var property);
+                return property;
+            }
+        }
+
+        public EquippedGunState(GameObject gun) {
+            this._gun = gun;
+            gun.TryGetComponent<GunProperty>(out var property);
+            this._capacityLoad = property.CapacityLoad;
+            this.Load = property.CapacityLoad;
+            gun.SetActive(false);
+        }
+        public bool AddLoad(int add) {
+            if (IsLoadFull) return false;
+            Load = Mathf.Min(_capacityLoad, Load+add);
+            return true;
+        }
+
+        public void SwitchOn() { _gun.SetActive(true); }
+        public void SwitchOff() { _gun.SetActive(false); }
+    }
+
+    [SerializeField] private GameObject[] _initGuns; // int equipped gun;
+    [SerializeField] private GameObject[] _gunList; // all gun data 
 
     private Camera _camera;
+    private EquippedGunState[] _equipGuns;
     private Dictionary<string, GameObject> _gunDict;
     private Animator _animator;
     private CameraShake _cameraShake;
     
-    private int _curGunIndex = 0;
-    private int _equipGunCount = 1;
+    private int _curGunIndex = -1;
+    private int _equipGunCount = 0;
     private bool _canInput = true;
     private bool _isZoomIn = false;
 
@@ -22,6 +55,7 @@ public class GunController : MonoBehaviour
 
     private void Awake() {
         GenerateGunDict();
+        EquipInitGuns();
         TryGetComponent<Animator>(out _animator);
         _camera = GetComponentInChildren<Camera>();
         _camera.transform.TryGetComponent<CameraShake>(out _cameraShake);
@@ -35,22 +69,13 @@ public class GunController : MonoBehaviour
         }
     }
 
-    // public void OnFire(InputAction.CallbackContext value) {
-    //     if (value.started) {
-    //         Debug.Log("Fire!");
-    //         _animator.SetTrigger("Fire");   
-    //     }
-    // }
-
-    private void FixedUpdate() {
-        // var mouse = Mouse.current;
-        // if (mouse == null) {
-        //     return;
-        // }
-        // if (_canInput && Input.GetButtonDown("Fire1"))
-        // {
-        //     Fire();
-        // }
+    private void EquipInitGuns() {
+        _equipGuns = new EquippedGunState[_gunList.Length];
+        foreach (GameObject gun in _initGuns) {
+            _equipGuns[++_curGunIndex] = new EquippedGunState(gun);
+            _equipGunCount++;
+        }
+        _equipGuns[0]?.SwitchOn();
     }
 
     private void Update() {
@@ -82,7 +107,7 @@ public class GunController : MonoBehaviour
             Debug.Log($"Incorrect gunname: {gunname} set in unlock point");
             return false;
         } else {
-            _equipGuns[_equipGunCount++] = _gunDict[gunname];
+            _equipGuns[_equipGunCount++] = new EquippedGunState(_gunDict[gunname]);
             SwitchTo(_equipGunCount-1);
             return true;
         }
@@ -90,14 +115,14 @@ public class GunController : MonoBehaviour
 
     private void SwitchTo(int gunindex){
         if (gunindex >= _equipGunCount || gunindex == _curGunIndex) return;
-        _equipGuns[_curGunIndex].SetActive(false);
-        _equipGuns[gunindex].SetActive(true);
+        _equipGuns[_curGunIndex].SwitchOff();
+        _equipGuns[gunindex].SwitchOn();
         _curGunIndex = gunindex;
     }
 
 
     private void Fire(){
-        _equipGuns[_curGunIndex].TryGetComponent<GunProperty>(out var property);
+        GunProperty property = _equipGuns[_curGunIndex].Property;
         property.FireVFX.Play();
         _cameraShake.StartShaking(property.Kickback);
         _animator.SetTrigger("fire");
