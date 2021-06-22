@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4125926405100822385}
   - component: {fileID: 9056421693839037839}
+  - component: {fileID: 1877109028181327607}
   m_Layer: 0
   m_Name: Prototype_Gun
   m_TagString: Untagged
@@ -41,10 +42,26 @@ SphereCollider:
   m_GameObject: {fileID: 3966676240790137064}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.23
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1877109028181327607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3966676240790137064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 490abcbe57a1fd74ba6b52a6dee7291a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: 
+  Atk: 0
+  RangeOfFire: 0
+  FireVFX: {fileID: 0}
 --- !u!1 &7425091260466407953
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1877109028181327607, guid: 10de412b7846bc04abc2e8e675b4f6bf, type: 3}
+      propertyPath: Atk
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877109028181327607, guid: 10de412b7846bc04abc2e8e675b4f6bf, type: 3}
+      propertyPath: Name
+      value: RocketShooter
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877109028181327607, guid: 10de412b7846bc04abc2e8e675b4f6bf, type: 3}
+      propertyPath: RangeOfFire
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3966676240790137064, guid: 10de412b7846bc04abc2e8e675b4f6bf, type: 3}
       propertyPath: m_Name
       value: Rocket_Shooter
