@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7654237918893126259}
   - component: {fileID: 4523129422131139982}
   - component: {fileID: 7348535522761812932}
+  - component: {fileID: 6625279298765550190}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -62,8 +63,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1.6
+  m_Radius: 0.1
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7654237918893126259
@@ -171,12 +172,23 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _gunList:
-  - name: Handgun
-    gun: {fileID: 7142947535458961489}
-  - name: Sniper
-    gun: {fileID: 1831678455815552486}
-  - name: RocketShooter
-    gun: {fileID: 4861519461725704822}
+  - {fileID: 7142947535458961489}
+  - {fileID: 1831678455815552486}
+  - {fileID: 4861519461725704822}
+--- !u!114 &6625279298765550190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7654237918883432337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0198c0cf82a43844898bdf46323cdc83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHP: 10
+  _def: 0
 --- !u!1 &7654237918883432339
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +202,7 @@ GameObject:
   - component: {fileID: 7654237918879635863}
   - component: {fileID: 7654237918893126257}
   - component: {fileID: 7654237918892105727}
+  - component: {fileID: 494485038464661742}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -347,6 +360,19 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7654237918883432339}
   m_Enabled: 1
+--- !u!114 &494485038464661742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7654237918883432339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb9a3efb136c8774da224f3ed461dbfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shakeTimeLength: 0
 --- !u!1001 &342839881513753765
 PrefabInstance:
   m_ObjectHideFlags: 0

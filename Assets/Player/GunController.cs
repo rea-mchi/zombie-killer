@@ -1,20 +1,17 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-[System.Serializable]
-public struct SerializableGunData {
-    public string name;
-    public GameObject gun;
-}
 
 public class GunController : MonoBehaviour
 {
 
     [SerializeField] private GameObject[] _equipGuns; // set init gun here
-    [SerializeField] private SerializableGunData[] _gunList;
+    [SerializeField] private GameObject[] _gunList;
 
+    private Camera _camera;
     private Dictionary<string, GameObject> _gunDict;
     private Animator _animator;
+    private CameraShake _cameraShake;
     
     private int _curGunIndex = 0;
     private int _equipGunCount = 1;
@@ -26,12 +23,15 @@ public class GunController : MonoBehaviour
     private void Awake() {
         GenerateGunDict();
         TryGetComponent<Animator>(out _animator);
+        _camera = GetComponentInChildren<Camera>();
+        _camera.transform.TryGetComponent<CameraShake>(out _cameraShake);
     }
 
     private void GenerateGunDict() {
         _gunDict = new Dictionary<string, GameObject>();
-        foreach (var gundata in _gunList) {
-            _gunDict.Add(gundata.name, gundata.gun);
+        foreach (GameObject gun in _gunList) {
+            gun.TryGetComponent<GunProperty>(out var property);
+            _gunDict.Add(property.name, gun);
         }
     }
 
@@ -47,13 +47,17 @@ public class GunController : MonoBehaviour
         // if (mouse == null) {
         //     return;
         // }
-        if (_canInput && Input.GetButton("Fire1"))
-        {
-            Fire();
-        }
+        // if (_canInput && Input.GetButtonDown("Fire1"))
+        // {
+        //     Fire();
+        // }
     }
 
     private void Update() {
+                if (_canInput && Input.GetButtonDown("Fire1"))
+        {
+            Fire();
+        }
         if (_canInput && Input.GetKeyDown(KeyCode.Q)) {
             if (_isZoomIn) {
                 ZoomOut();
@@ -93,7 +97,35 @@ public class GunController : MonoBehaviour
 
 
     private void Fire(){
+        _equipGuns[_curGunIndex].TryGetComponent<GunProperty>(out var property);
+        property.FireVFX.Play();
+        _cameraShake.StartShaking(property.Kickback);
         _animator.SetTrigger("fire");
+        Vector3 fireDirection = _camera.transform.forward;
+        if (Physics.Raycast(transform.position, fireDirection, out var hit, property.RangeOfFire)) {
+            string tag = hit.transform.tag;
+            Debug.DrawRay(transform.position, fireDirection * hit.distance, Color.red);
+            if (tag == "EnemyHead") {
+                hit.transform.parent.TryGetComponent<EnemyAI>(out var ai);
+                ai.HeadBoom();
+                ShowHitVFX(hit, property.HitEnemyVFX, hitEnemy: true);
+            } else if (tag == "EnemyBody") {
+                hit.transform.TryGetComponent<EnemyHealth>(out var health);
+                health.Hurted(property.Atk);
+                ShowHitVFX(hit, property.HitEnemyVFX, hitEnemy: true);
+            } else {
+                ShowHitVFX(hit, property.HitVFX);
+            }
+        }
+    }
+
+    private void ShowHitVFX(RaycastHit hitInfo, GameObject[] VFXPrefabs, bool hitEnemy = false) {
+        foreach (GameObject prefab in VFXPrefabs) {
+            var instance = Instantiate(prefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+            if (hitEnemy) {
+                instance.transform.parent = hitInfo.transform;
+            }
+        }
     }
 
     private void ZoomIn() {
